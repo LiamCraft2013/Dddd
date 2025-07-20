@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Scanner QR</title>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    body {
+      background: #111;
+      color: #fff;
+      text-align: center;
+      font-family: sans-serif;
+    }
+    #reader {
+      width: 300px;
+      margin: auto;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📱 Scanner QR</h1>
+  <div id="reader"></div>
+  <p id="result">Résultat : ...</p>
+
+  <script>
+    function onScanSuccess(decodedText, decodedResult) {
+      document.getElementById("result").innerText = "Résultat : " + decodedText;
+
+      // Action que tu veux faire
+      if (decodedText.startsWith("http")) {
+        window.location.href = decodedText;
+      } else if (decodedText.startsWith("crazycraft://")) {
+        alert("Commande reçue : " + decodedText);
+        // Tu peux lancer une autre fonction ici
+      }
+    }
+
+    const html5QrCode = new Html5Qrcode("reader");
+
+    Html5Qrcode.getCameras().then(devices => {
+      if (devices.length) {
+        html5QrCode.start(
+          devices[0].id,
+          { fps: 10, qrbox: 250 },
+          onScanSuccess
+        );
+      }
+    }).catch(err => {
+      console.error("Erreur caméra : ", err);
+    });
+  </script>
+
+</body>
+</html>
